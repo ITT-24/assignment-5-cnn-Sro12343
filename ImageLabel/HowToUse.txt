@@ -1,0 +1,4 @@
+The program uses two arguments. One is the source image, and the other is the label. A possible execution of the program is:
+python ./image_label.py ./lik1.jpg like
+
+It will open a window. Click once at the upper left corner of the area of interest and once on the lower right. The json for lable for that image will be printed and the image will be resized to a 1080x1920 Resolution. The Program ends. Restart it with a new source image.
