@@ -6,6 +6,7 @@ from PIL import Image
 import sys
 import os
 import json
+import uuid
 
 #setup variables    
 current_dir = os.path.dirname(__file__)
@@ -28,17 +29,33 @@ else:
 source_img = cv2.imread(input_path)
 
 print(f"Trying to load image from: {input_path}")
+
+
 edit_img = source_img.copy()  
 height, width = source_img.shape[:2]
 
-new_dimensions = (width // 2, height // 2)
-edit_img = cv2.resize(source_img, new_dimensions, interpolation=cv2.INTER_AREA)
-width =int(width/2)
-height = int(height/2)
+#Enough points so warp image
+#point_array = np.float32(np.array([[0, 0], [width, 0], [width, height], [0, height]]))
+#point_array = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+#destination = np.float32(np.array([[0, 0], [1080, 0], [1080, 1920], [0, 1920]]))
+#mat = cv2.getPerspectiveTransform(point_array, destination)
+#edit_img = cv2.warpPerspective(source_img,mat,(width, height))
+#height2, width2 = source_img.shape[:2]
+
+cropped_image = source_img[:, 160:width-160]
+
+new_dimensions = (1080, 1920)
+result_img =  cv2.resize(cropped_image, new_dimensions, interpolation=cv2.INTER_AREA)
+new_dimensions = (1080//2, 1920//2)
+edit_img = cv2.resize(cropped_image, new_dimensions, interpolation=cv2.INTER_AREA)
+width =int(1080//2)
+height = int(1920//2)
 #Setup Pyglet Window
 WINDOW_WIDTH = width
 WINDOW_HEIGHT = height
 window = pyglet.window.Window(WINDOW_WIDTH, WINDOW_HEIGHT)
+
+#save_img
 
 
 # converts OpenCV image to PIL image and then to pyglet texture
@@ -89,9 +106,10 @@ def on_mouse_press(x, y, button, modifiers):
             edit_img = cv2.circle(edit_img, (x, height-y), 5, (255, 0, 0), -1)
         if len(point_list_x) == 2:
             #print position
-            
+
+            name = str(uuid.uuid4())
             data = {
-                input_path[2:-4]: {
+                name: {
                     "bboxes": [
                         [
                             point_list_x[0] / WINDOW_WIDTH,
@@ -123,16 +141,11 @@ def on_mouse_press(x, y, button, modifiers):
                         (point_list_y[1] - point_list_y[0]) / WINDOW_HEIGHT,
                         poseType)
 
-            print('"{}": {{\n{}\n}}'.format(input_path[2:-4], inner_content))
-            height2, width2 = source_img.shape[:2]
+            print('"{}": {{\n{}\n}}'.format(name, inner_content))
             
-            #Enough points so warp image
-            point_array = np.float32(np.array([[0, 0], [width2, 0], [width2, height2], [0, height2]]))
-            #point_array = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
-            destination = np.float32(np.array([[0, 0], [1080, 0], [1080, 1920], [0, 1920]]))
-            mat = cv2.getPerspectiveTransform(point_array, destination)
-            edit_img = cv2.warpPerspective(source_img,mat,(width2, height2))
-            cv2.imwrite(input_path, edit_img)
+            
+
+            cv2.imwrite("./"+name+".jpg", result_img)
             #resize to result resolution
             window.close()        
 
