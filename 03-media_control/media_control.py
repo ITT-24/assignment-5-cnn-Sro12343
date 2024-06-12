@@ -29,6 +29,7 @@ current_dir = os.path.dirname(__file__)
 model_p = os.path.join(current_dir,'3_value_model.h5')
 if os.path.isfile(model_p):
     model = load_model(model_p) 
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 else:
     print("Model file not found.")
     
@@ -79,12 +80,11 @@ def record():
     global cooldown_start
     #get image and perform prediction on it.
         
-    print(cooldown)
     ret, frame = cap.read()
     if COLOR_CHANNELS == 1:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
-    plt.imshow(frame)
+    #plt.imshow(frame)
     resized = cv2.resize(frame, SIZE)
     
     reshaped = resized.reshape(-1, IMG_SIZE, IMG_SIZE, COLOR_CHANNELS)
