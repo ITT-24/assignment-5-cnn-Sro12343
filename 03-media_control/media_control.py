@@ -88,11 +88,7 @@ def record():
     resized = cv2.resize(frame, SIZE)
     
     reshaped = resized.reshape(-1, IMG_SIZE, IMG_SIZE, COLOR_CHANNELS)
-    #print("shape")
-    #print(reshaped.shape)
     prediction = model.predict(reshaped)
-    #print(prediction)
-    #print(label_names[np.argmax(prediction)], np.max(prediction))
     prediction_name = label_names[np.argmax(prediction)]
     
     if prediction_name == 'like':
@@ -139,7 +135,7 @@ def record():
 while True:
     record()
 
-#pyglet.app.run()
+
 #window = pyglet.window.Window(WINDOW_WIDTH, WINDOW_HEIGHT)
 #@window.event
 #def on_draw():
@@ -148,6 +144,12 @@ while True:
 #    #frame.draw()
 #    img = cv2glet(frame, 'BGR')
 #    img.blit(0, 0, 0)
+
+#pyglet.app.run()
+
+
+
+
 
 
 cap.release()
