@@ -130,6 +130,10 @@ def record():
 
 
 
+
+
+
+
 #for debug switch commented and uncommented parts->
 
 while True:
