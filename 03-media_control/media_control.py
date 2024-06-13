@@ -9,6 +9,7 @@ import os
 import random
 import pyglet
 from PIL import Image
+import time
 
 from keras.models import load_model
 from pynput import keyboard
@@ -73,7 +74,7 @@ cooldown = cooldown_start
 
 
 
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
 
 def record():
     global cooldown
@@ -85,7 +86,13 @@ def record():
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
     #plt.imshow(frame)
-    resized = cv2.resize(frame, SIZE)
+    try:
+        resized = cv2.resize(frame, SIZE)
+    except:
+        return
+
+    cv2.imshow('test', resized)
+    cv2.waitKey(1)
     
     reshaped = resized.reshape(-1, IMG_SIZE, IMG_SIZE, COLOR_CHANNELS)
     prediction = model.predict(reshaped)
@@ -124,6 +131,7 @@ def record():
         pass
     
     
+    time.sleep(1)
     
     return reshaped[0]
     pass
